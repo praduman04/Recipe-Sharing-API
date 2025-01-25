@@ -28,6 +28,13 @@ const UserSchema=new mongoose.Schema({
     friends:{
         type:[mongoose.Schema.Types.ObjectId],
         ref:"User"
+    },
+    deviceTokens:{
+        type:[String]
+    },
+    recipe:{
+        type:[mongoose.Schema.Types.ObjectId],
+        ref:"Recipe"
     }
 },{timestamps:true})
 export const UserModel=mongoose.model("User",UserSchema);
