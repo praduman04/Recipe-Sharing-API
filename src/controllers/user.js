@@ -1,9 +1,11 @@
 import { UserModel } from "../models/User.js"
+import bcrypt from "bcrypt"
 
 export const createUser=async(req,res,next)=>{
     try {
-        const{name,username,password,mobile}=req.body
-    const data= await UserModel.create({name,username,password,mobile})
+        const{name,username,password,mobile,email}=req.body
+        const hashedPassword= await bcrypt.hash(password,10)
+    const data= await UserModel.create({name,username,password:hashedPassword,mobile,email})
     return res.status(201).json({
         success:true,
         message:"USER CREATED SUCCESSFULLY.",
@@ -89,5 +91,42 @@ export const deleteUser=async(req,res,next)=>{
             success:false,
             message:"An error occurred while deleting the user."
         })
+    }
+}
+export const search=async(req,res,next)=>{
+    try {
+        const  {username,name,page=1,limit=10}=req.query;
+        const searchCriteria={};
+        if(username){
+            searchCriteria.username={$regex:username,$options:"i"}
+        }
+        if(name){
+            searchCriteria.name={$regex:name,$options:"i"};
+        }
+        const pageNumber=parseInt(page,10);
+        const pageSize=parseInt(limit,10);
+        const skip=(pageNumber-1)*pageSize
+        const data= await UserModel.find(searchCriteria).skip(skip).limit(pageSize).exec();
+        const totalUsers=await UserModel.countDocuments(searchCriteria);
+        return res.status(200).json({
+            success:true,
+            message: "Users fetched successfully.",
+            data: {
+                pagination: {
+                    totalUsers,
+                    currentPage: pageNumber,
+                    totalPages: Math.ceil(totalUsers / pageSize),
+                    pageSize,
+                },
+                data,
+                
+            },
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while fetching users. Please try again.",
+        });
     }
 }
