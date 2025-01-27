@@ -24,7 +24,7 @@ export const createUser=async(req,res,next)=>{
 export const updateUser=async(req,res,next)=>{
     try {
          const updatedFields=req.body
-        const {id}=req.params
+        const {id}=req.user
         const data=await UserModel.findByIdAndUpdate(id, {$set:updatedFields},{new:true});
         if(!data){
             return res.status(404).json({
@@ -72,7 +72,7 @@ export const viewUser=async(req,res,next)=>{
 }
 export const deleteUser=async(req,res,next)=>{
     try {
-        const data=await UserModel.findByIdAndDelete(req.params.id);
+        const data=await UserModel.findByIdAndDelete(req.user.id);
         if(!data){
             return res.status(404).json({
                 success:false,
