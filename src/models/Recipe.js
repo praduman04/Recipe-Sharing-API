@@ -6,8 +6,8 @@ const RecipeSchema = mongoose.Schema(
       required: true,
     },
     cook: {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref:"User",
     },
     ingredients: {
       type: [String],
@@ -34,8 +34,12 @@ const RecipeSchema = mongoose.Schema(
     rating: {
       type: Number,
       default: 0,
-      min: [1, "Rating must be at least 1"],
+      
       max: [5, "Rating cannot exceed 5"],
+    },
+    totalRating:{
+      type:Number,
+      default:0
     },
     feedbacks: {
       type: [String],

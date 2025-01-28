@@ -107,10 +107,16 @@ export const search=async(req,res,next)=>{
         const pageSize=parseInt(limit,10);
         const skip=(pageNumber-1)*pageSize
         const data= await UserModel.find(searchCriteria).skip(skip).limit(pageSize).exec();
+        if(data.length===0){
+            return res.status(404).json({
+                success:false,
+                message:"No User Found."
+            })
+        }
         const totalUsers=await UserModel.countDocuments(searchCriteria);
         return res.status(200).json({
             success:true,
-            message: "Users fetched successfully.",
+            message: "Recipes fetched successfully.",
             data: {
                 pagination: {
                     totalUsers,
