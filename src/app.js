@@ -1,11 +1,13 @@
 import express from "express";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
+import cors from "cors"
 import { connectDB } from "./utils/connectDB.js";
 import UserRoutes from "../src/routes/user.js";
 import loginRoutes from "../src/routes/auth.js";
 import recipeRoutes from "./routes/recipe.js"
 dotenv.config()
 const app=express();
+app.use(cors());
 app.use(express.json());
 app.use("/api/v1/user",UserRoutes)
 app.use("/api/v1/auth",loginRoutes)
